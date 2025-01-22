@@ -1,21 +1,26 @@
 import sys
 import pandas as pd
+import os
 
 from src.exception import CustomException
 from src.utils import load_object
 from src.logger import logging
 
 class PredictPipeline:
-    def __init__(self):
-        pass
+    def __init__(self, base_dir):
+        self.base_dir = base_dir 
 
     def predict(self,features):
         try:
-            model_path = 'artifacts\model.pkl'
-            preprocessor_path = 'artifacts\preprocessor.pkl'
+            #model_path = 'artifacts\model.pkl'
+            model_path = os.path.join(self.base_dir, 'artifacts', 'model.pkl')
+            #preprocessor_path = 'artifacts\preprocessor.pkl'
+            preprocessor_path = os.path.join(self.base_dir, 'artifacts', 'preprocessor.pkl')
 
             model = load_object(file_path=model_path)
+            logging.info("Model read from :{}".format(model_path))
             preprocesor = load_object(file_path=preprocessor_path)
+            logging.info("preprocesor read from :{}".format(preprocessor_path))
 
             data_scaled = preprocesor.transform(features)
             preds = model.predict(data_scaled)

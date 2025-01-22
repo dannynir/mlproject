@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 import numpy as np
 import pandas as pd
 import sys
+import os
 
 from src.logger import logging
 from src.exception import CustomException
@@ -10,6 +11,9 @@ from src.pipeline.predict_pipeline import CustomData,PredictPipeline
 application = Flask(__name__)
 
 app = application
+
+# Define the base directory dynamically
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Route for home page
 @app.route('/')
@@ -32,7 +36,7 @@ def predict_datapoint():
             
             df = data.get_data_as_dataframe()
             logging.info("data has {}".format(df))
-            predict_pipe=PredictPipeline()
+            predict_pipe=PredictPipeline(base_dir=BASE_DIR)
             results=predict_pipe.predict(df)
             logging.info("result is {}".format(results))
             return render_template('home.html',results=results[0])
